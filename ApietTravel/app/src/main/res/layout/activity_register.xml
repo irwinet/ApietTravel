@@ -112,18 +112,36 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <CheckBox
+                android:id="@+id/chbTermsConditions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/linkTermsConditions"
+                android:textColor="@color/colorRegisterLogin"
+                android:autoLink="web"
+                android:textSize="14sp"/>
+
             <Button
                 android:id="@+id/email_register_in_button"
                 style="?android:textAppearanceSmall"
-                android:textAllCaps="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorButtonLogin"
                 android:text="@string/action_register_in"
+                android:textAllCaps="false"
                 android:textColor="@color/colorText"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvOtherAuthentication"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Or sart session with:"
+                android:textColor="@color/colorRegisterLogin"
+                android:textAlignment="center"/>
+
 
         </LinearLayout>
 

@@ -24,4 +24,7 @@
     <string name="pathPrimary">fonts/Bree Regular.otf</string>
     <string name="pathSecond">fonts/BreeSerif-Regular.ttf</string>
     <string name="pathThree">fonts/Raleway-Medium.ttf</string>
+
+    //Link
+    <string name="linkTermsConditions">To register, I accept the <u>Terms and Conditions</u></string>
 </resources>

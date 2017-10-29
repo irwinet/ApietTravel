@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "SERIF", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "SANS_SERIF", getString(R.string.pathPrimary));
+
         //Assign Action Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
