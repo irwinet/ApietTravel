@@ -10,6 +10,7 @@
     <string name="prompt_country">Country</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login</string>
+    <string name="action_register_in">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -18,4 +19,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Path Font-Famiy -->
+    <string name="pathPrimary">fonts/Bree Regular.otf</string>
+    <string name="pathSecond">fonts/BreeSerif-Regular.ttf</string>
+    <string name="pathThree">fonts/Raleway-Medium.ttf</string>
 </resources>

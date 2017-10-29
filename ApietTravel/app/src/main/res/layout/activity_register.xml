@@ -112,6 +112,19 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <Button
+                android:id="@+id/email_register_in_button"
+                style="?android:textAppearanceSmall"
+                android:textAllCaps="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorButtonLogin"
+                android:text="@string/action_register_in"
+                android:textColor="@color/colorText"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
         </LinearLayout>
 
     </ScrollView>

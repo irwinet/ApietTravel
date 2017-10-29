@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +24,15 @@ public class RegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Initialize Font Family
-        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),"fonts/Lobster-Regular.ttf");
+        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathPrimary));
 
         //Initialize Controls
         TextView tvLogin = (TextView) findViewById(R.id.tvLogin);
+        Button mRegisterInButton = (Button) findViewById(R.id.email_register_in_button);
 
         //Assign Font Family
         tvLogin.setTypeface(myTypeFaceThree);
+        mRegisterInButton.setTypeface(myTypeFaceThree);
 
         //Event Login
         tvLogin.setOnClickListener(new View.OnClickListener() {

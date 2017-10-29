@@ -37,6 +37,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import application.android.irwinet.apiettravel.FontManifest.TypefaceUtil;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -72,14 +74,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        TypefaceUtil.setDefaultFont(this, "DEFAULT", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "SERIF", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "SANS_SERIF", getString(R.string.pathPrimary));
         //Assign Action Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Initialize Font Family
-        Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),"fonts/Raleway-ExtraBold.ttf");
-        Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),"fonts/Raleway-Medium.ttf");
-        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),"fonts/Lobster-Regular.ttf");
+        Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),getString(R.string.pathPrimary));
+        Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),getString(R.string.pathSecond));
+        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathThree));
 
         //Initialize Controls
         TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
@@ -90,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
 
         //Assign Font Family
-        tvRegister.setTypeface(myTypeFaceThree);
+        tvRegister.setTypeface(myTypeFacePrimary);
         mEmailSignInButton.setTypeface(myTypeFacePrimary);
         mEmailView.setTypeface(myTypeFaceSecond);
         mPasswordView.setTypeface(myTypeFaceSecond);
