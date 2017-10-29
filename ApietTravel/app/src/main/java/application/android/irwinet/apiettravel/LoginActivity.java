@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -20,8 +21,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,18 +72,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //Set Font Family
+        //Assign Action Bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //Initialize Font Family
         Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),"fonts/Raleway-ExtraBold.ttf");
         Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),"fonts/Raleway-Medium.ttf");
+        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),"fonts/Lobster-Regular.ttf");
+
+        //Initialize Controls
+        TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+
+        //Assign Font Family
+        tvRegister.setTypeface(myTypeFaceThree);
+        mEmailSignInButton.setTypeface(myTypeFacePrimary);
+        mEmailView.setTypeface(myTypeFaceSecond);
+        mPasswordView.setTypeface(myTypeFaceSecond);
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mEmailView.setTypeface(myTypeFaceSecond);
-
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setTypeface(myTypeFaceSecond);
+        //Event Password
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -93,17 +110,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setTypeface(myTypeFacePrimary);
+        //Event Register
+        tvRegister.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewRegister(null);
+            }
+        });
+
+        //Event Buttom Login
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+        
+        //Event ActionBar
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(LoginActivity.this, "Main", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     private void populateAutoComplete() {
@@ -278,9 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> cursorLoader) { }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
@@ -290,7 +318,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setAdapter(adapter);
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -361,8 +388,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public void viewMain(View v)
     {
-        Intent intent=new Intent(this,UserActivity.class);
-        startActivity(intent);
+
+    }
+
+    public void viewRegister(View v)
+    {
+        Intent intentRegister=new Intent(this,RegisterActivity.class);
+        startActivity(intentRegister);
     }
 }
 

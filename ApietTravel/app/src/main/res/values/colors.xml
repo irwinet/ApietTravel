@@ -7,4 +7,5 @@
     <color name="colorText">#FFFFFF</color>
     <color name="colorInput">#128B9C</color>
     <color name="colorButtonLogin">#128B9C</color>
+    <color name="colorRegisterLogin">#9E9E9E</color>
 </resources>

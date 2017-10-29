@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">ApietTravel</string>
+    <string name="app_register">Register</string>
+    <string name="app_login">Login</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
+    <string name="prompt_firstname">FirstName</string>
+    <string name="prompt_lastname">Last Name</string>
+    <string name="prompt_country">Country</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Sign in</string>
