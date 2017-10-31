@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +34,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +76,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
-    @Override
+    //Firebase
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -129,7 +138,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                //attemptLogin();
+                String email = mEmailView.getText().toString();
+                String password = mPasswordView.getText().toString();
+                login(email,password);
             }
         });
         
@@ -141,6 +153,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //Event Firebase Sesion
+        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if(user != null)
+                {
+                    viewMain(null);
+                }
+                else
+                {
+                    viewLogin(null);
+                }
+            }
+        };
     }
 
     private void populateAutoComplete() {
@@ -393,15 +421,73 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    public void add(String email, String password)
+    {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful())
+                {
+                    Toast.makeText(LoginActivity.this, "USUARIO CREADO CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(LoginActivity.this, task.getException().getMessage()+"", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void login(String email, String password)
+    {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful())
+                {
+                    viewMain(null);
+                }
+                else
+                {
+                    viewRegister(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        if(mAuthStateListener != null)
+        {
+            FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
     public void viewMain(View v)
     {
-
+        Intent intentMain=new Intent(this,MainActivity.class);
+        startActivity(intentMain);
     }
 
     public void viewRegister(View v)
     {
         Intent intentRegister=new Intent(this,RegisterActivity.class);
         startActivity(intentRegister);
+    }
+
+    public void viewLogin(View v)
+    {
+        Intent intentLogin=new Intent(this,LoginActivity.class);
+        startActivity(intentLogin);
     }
 }
 
