@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -24,6 +26,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -45,6 +48,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,6 +90,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //System.out.print("KeyHashes"+KeyHashes());
 
         TypefaceUtil.setDefaultFont(this, "DEFAULT", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
@@ -497,6 +503,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     {
         Intent intentLogin=new Intent(this,LoginActivity.class);
         startActivity(intentLogin);
+    }
+
+    public String KeyHashes()
+    {
+        PackageInfo info;
+        String KeyHashes=null;
+        try
+        {
+            info = getPackageManager().getPackageInfo("application.android.irwinet.apiettravel",PackageManager.GET_SIGNATURES);
+            for(Signature signature : info.signatures)
+            {
+                MessageDigest md;
+                md=MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                KeyHashes = new String(Base64.encode(md.digest(),0));
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return KeyHashes;
     }
 }
 

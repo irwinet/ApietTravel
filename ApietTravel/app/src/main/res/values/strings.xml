@@ -39,4 +39,8 @@
     <string name="messageDialog">Please re-login to renew your session.</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+
+    //Facebook
+    <string name="id_facebook">136417117010010</string>
+
 </resources>
