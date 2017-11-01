@@ -42,6 +42,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -87,9 +97,74 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     //Firebase
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    //Facebook
+    private CallbackManager mCallbackManager;
+    private AccessTokenTracker mAccessTokenTracker;
+    private ProfileTracker mProfileTracker;
+    LoginButton mLoginButton;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mCallbackManager.onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Profile profile=Profile.getCurrentProfile();
+        Datos(profile);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
+        mCallbackManager=CallbackManager.Factory.create();
+        mLoginButton = (LoginButton) findViewById(R.id.login_button);
+
+        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken=loginResult.getAccessToken();
+                Profile profile=Profile.getCurrentProfile();
+                Datos(profile);
+
+                mAccessTokenTracker=new AccessTokenTracker() {
+                    @Override
+                    protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+
+                    }
+                };
+
+                mProfileTracker=new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                        Datos(currentProfile);
+                    }
+                };
+
+                mAccessTokenTracker.startTracking();
+                mProfileTracker.startTracking();
+
+                mLoginButton.setReadPermissions("user_friends");
+                mLoginButton.setReadPermissions("public_profile");
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, "Error Facebook: "+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
         //System.out.print("KeyHashes"+KeyHashes());
 
@@ -184,6 +259,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }*/
             }
         };
+    }
+
+    private void Datos(Profile perfil)
+    {
+        if(perfil!=null)
+        {
+            String nombre=perfil.getName();
+            Toast.makeText(this, "Welcome: "+nombre, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void populateAutoComplete() {
@@ -497,12 +581,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     {
         Intent intentRegister=new Intent(this,RegisterActivity.class);
         startActivity(intentRegister);
-    }
-
-    public void viewLogin(View v)
-    {
-        Intent intentLogin=new Intent(this,LoginActivity.class);
-        startActivity(intentLogin);
     }
 
     public String KeyHashes()
