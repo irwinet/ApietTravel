@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="end"
-                android:text="Register"
+                android:text="@string/app_register"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorRegisterLogin"
                 android:textSize="20sp"/>

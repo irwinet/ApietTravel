@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -24,9 +25,12 @@ import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -163,10 +167,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 {
                     viewMain(null);
                 }
-                else
+                /*else
                 {
-                    viewLogin(null);
-                }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this,R.style.MyDialogTheme);
+                    builder.setTitle(R.string.titleDialog);
+                    builder.setMessage(R.string.messageDialog);
+                    builder.setPositiveButton(R.string.ok,null);
+                    builder.create();
+                    builder.show();
+                }*/
             }
         };
     }

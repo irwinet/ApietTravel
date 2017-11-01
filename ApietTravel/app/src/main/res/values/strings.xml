@@ -16,8 +16,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."
     </string>
 
     <!-- Path Font-Famiy -->
@@ -27,10 +26,17 @@
 
     //Link
     <string name="linkTermsConditions">To register, I accept the <u>Terms and Conditions</u></string>
+    <string name="optionLogin">Or start session with:</string>
     <string name="title_activity_main">ApietTravel</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    //Dialog
+    <string name="titleDialog">SESION EXPIRED</string>
+    <string name="messageDialog">Please re-login to renew your session.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 </resources>
