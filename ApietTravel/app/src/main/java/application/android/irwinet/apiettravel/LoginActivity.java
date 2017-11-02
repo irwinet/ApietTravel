@@ -266,6 +266,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(perfil!=null)
         {
             String nombre=perfil.getName();
+            viewMain(null);
             Toast.makeText(this, "Welcome: "+nombre, Toast.LENGTH_LONG).show();
         }
     }
@@ -574,6 +575,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void viewMain(View v)
     {
         Intent intentMain=new Intent(this,MainActivity.class);
+        intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
     }
 
