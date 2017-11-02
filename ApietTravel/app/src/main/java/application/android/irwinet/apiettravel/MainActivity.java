@@ -13,9 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity
         }
         else {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            TextView tvName = (TextView) findViewById(R.id.tvName);
+            TextView tvEmail = (TextView) findViewById(R.id.tvEmail);
+
             setSupportActionBar(toolbar);
 
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

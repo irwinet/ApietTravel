@@ -60,6 +60,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import application.android.irwinet.apiettravel.FontManifest.TypefaceUtil;
@@ -151,11 +152,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 mLoginButton.setReadPermissions("user_friends");
                 mLoginButton.setReadPermissions("public_profile");
+                mLoginButton.setReadPermissions(Arrays.asList("email"));
             }
 
             @Override
             public void onCancel() {
-
+                Toast.makeText(LoginActivity.this, "Se canceló la operación", Toast.LENGTH_SHORT).show();
             }
 
             @Override
