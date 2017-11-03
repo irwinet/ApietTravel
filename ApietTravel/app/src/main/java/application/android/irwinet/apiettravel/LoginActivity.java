@@ -52,6 +52,12 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -70,7 +76,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -95,10 +101,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
-    //Firebase
+    /* *************************************
+     *              FIREBASE               *
+     ***************************************/
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    //End Firebase
 
-    //Facebook
+    /* *************************************
+     *              GOOGLE                 *
+     ***************************************/
+    private GoogleApiClient mGoogleApiClient;
+    private SignInButton mSignInButton;
+    public static final int RC_GOOGLE_LOGIN = 1;
+    //End Google
+
+    /* *************************************
+     *              FACEBOOK               *
+     ***************************************/
     private CallbackManager mCallbackManager;
     private AccessTokenTracker mAccessTokenTracker;
     private ProfileTracker mProfileTracker;
@@ -107,8 +126,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==RC_GOOGLE_LOGIN)
+        {
+            GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }else
+        {
+            mCallbackManager.onActivityResult(requestCode,resultCode,data);
+        }
+    }
 
-        mCallbackManager.onActivityResult(requestCode,resultCode,data);
+    private void handleSignInResult(GoogleSignInResult result) {
+        if(result.isSuccess())
+        {
+            viewMain();
+        }
+        else
+        {
+            Toast.makeText(this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -117,12 +153,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Profile profile=Profile.getCurrentProfile();
         Datos(profile);
     }
+    //End Facebook
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
+        //Assign Action Bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        TypefaceUtil.setDefaultFont(this, "DEFAULT", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "SERIF", getString(R.string.pathPrimary));
+        TypefaceUtil.setDefaultFont(this, "SANS_SERIF", getString(R.string.pathPrimary));
+
+        //Initialize Font Family
+        Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),getString(R.string.pathPrimary));
+        Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),getString(R.string.pathSecond));
+        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathThree));
+
+        //Initialize Controls
+        TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+
+        //Assign Font Family
+        tvRegister.setTypeface(myTypeFacePrimary);
+        mEmailSignInButton.setTypeface(myTypeFacePrimary);
+        mEmailView.setTypeface(myTypeFaceSecond);
+        mPasswordView.setTypeface(myTypeFaceSecond);
+
+        /* *************************************
+         *              FACEBOOK               *
+         ***************************************/
         mCallbackManager=CallbackManager.Factory.create();
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
 
@@ -165,38 +233,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Toast.makeText(LoginActivity.this, "Error Facebook: "+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+        //End Login Facebook
+
+        /* *************************************
+         *               GOOGLE                *
+         ***************************************/
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestEmail()
+                                        .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                                .enableAutoManage(this,this)
+                                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                                .build();
+        mSignInButton = (SignInButton) findViewById(R.id.signInButton);
+        mSignInButton.setSize(SignInButton.SIZE_WIDE);
+        mSignInButton.setColorScheme(SignInButton.COLOR_DARK);
+        mSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(intent,RC_GOOGLE_LOGIN);
+            }
+        });
+        //End Login Google
+
+        /* *************************************
+         *                TWITTER              *
+         ***************************************/
+
+        //End Login Twitter
 
 
 
         //System.out.print("KeyHashes"+KeyHashes());
-
-        TypefaceUtil.setDefaultFont(this, "DEFAULT", getString(R.string.pathPrimary));
-        TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
-        TypefaceUtil.setDefaultFont(this, "SERIF", getString(R.string.pathPrimary));
-        TypefaceUtil.setDefaultFont(this, "SANS_SERIF", getString(R.string.pathPrimary));
-
-        //Assign Action Bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //Initialize Font Family
-        Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),getString(R.string.pathPrimary));
-        Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),getString(R.string.pathSecond));
-        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathThree));
-
-        //Initialize Controls
-        TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        //Assign Font Family
-        tvRegister.setTypeface(myTypeFacePrimary);
-        mEmailSignInButton.setTypeface(myTypeFacePrimary);
-        mEmailView.setTypeface(myTypeFaceSecond);
-        mPasswordView.setTypeface(myTypeFaceSecond);
 
         // Set up the login form.
         populateAutoComplete();
@@ -217,7 +286,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         tvRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewRegister(null);
+                viewRegister();
             }
         });
 
@@ -248,7 +317,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user != null)
                 {
-                    viewMain(null);
+                    viewMain();
                 }
                 /*else
                 {
@@ -268,7 +337,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(perfil!=null)
         {
             String nombre=perfil.getName();
-            viewMain(null);
+            viewMain();
             Toast.makeText(this, "Welcome: "+nombre, Toast.LENGTH_LONG).show();
         }
     }
@@ -456,6 +525,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    //Facebook
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+    //End
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -509,7 +587,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                viewMain(null);
+                viewMain();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -523,6 +601,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    //Login With Email And Passowrd
     public void add(String email, String password)
     {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -547,11 +626,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
-                    viewMain(null);
+                    viewMain();
                 }
                 else
                 {
-                    viewRegister(null);
+                    viewRegister();
                 }
             }
         });
@@ -573,15 +652,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
         }
     }
+    //End Login With Email And Passowrd
 
-    public void viewMain(View v)
+    public void viewMain()
     {
         Intent intentMain=new Intent(this,MainActivity.class);
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
     }
 
-    public void viewRegister(View v)
+    public void viewRegister()
     {
         Intent intentRegister=new Intent(this,RegisterActivity.class);
         startActivity(intentRegister);

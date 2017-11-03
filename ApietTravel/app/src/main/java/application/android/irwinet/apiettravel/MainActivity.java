@@ -2,6 +2,7 @@ package application.android.irwinet.apiettravel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -19,20 +20,50 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+
+    /* *************************************
+     *              GOOGLE                 *
+     ***************************************/
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(AccessToken.getCurrentAccessToken()==null)
+
+        /* *************************************
+         *              GOOGLE                 *
+         ***************************************/
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
+
+
+        //End Google
+
+        /*if(AccessToken.getCurrentAccessToken()==null)
         {
             viewLogin();
         }
-        else {
+        else {*/
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView tvName = (TextView) findViewById(R.id.tvName);
             TextView tvEmail = (TextView) findViewById(R.id.tvEmail);
@@ -56,6 +87,39 @@ public class MainActivity extends AppCompatActivity
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
+        //}
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if(opr.isDone())
+        {
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        }
+        else
+        {
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        if(result.isSuccess())
+        {
+            GoogleSignInAccount account = result.getSignInAccount();
+            Toast.makeText(this, "Welcome: "+account.getDisplayName(), Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //viewLogin();
         }
     }
 
@@ -104,7 +168,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-            Toast.makeText(this, "Test", Toast.LENGTH_SHORT).show();
+            logOutGmail();
         } else if (id == R.id.nav_share) {
             logout();
         } else if (id == R.id.nav_send) {
@@ -132,5 +196,26 @@ public class MainActivity extends AppCompatActivity
         Intent intentLogin=new Intent(this,LoginActivity.class);
         intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentLogin);
+    }
+
+    public void logOutGmail()
+    {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if(status.isSuccess())
+                {
+                    viewLogin();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No se pudo cerra sesión", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
