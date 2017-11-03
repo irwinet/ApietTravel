@@ -53,6 +53,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -60,9 +61,11 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -139,12 +142,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void handleSignInResult(GoogleSignInResult result) {
         if(result.isSuccess())
         {
-            viewMain();
+            firebaseAuthWithGoogle(result.getSignInAccount());
         }
         else
         {
             Toast.makeText(this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount signInAccount) {
+
+        mProgressView.setVisibility(View.VISIBLE);
+        mSignInButton.setVisibility(View.GONE);
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(),null);
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                mProgressView.setVisibility(View.GONE);
+                mSignInButton.setVisibility(View.VISIBLE);
+
+                if(!task.isSuccessful())
+                {
+                    Toast.makeText(LoginActivity.this, "No se pudo autenticar con firebase", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -177,6 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Initialize Controls
         TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
@@ -185,6 +210,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Assign Font Family
         tvRegister.setTypeface(myTypeFacePrimary);
         mEmailSignInButton.setTypeface(myTypeFacePrimary);
+        mRegisterButton.setTypeface(myTypeFacePrimary);
         mEmailView.setTypeface(myTypeFaceSecond);
         mPasswordView.setTypeface(myTypeFaceSecond);
 
@@ -239,6 +265,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
          *               GOOGLE                *
          ***************************************/
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestIdToken(getString(R.string.default_web_client_id))
                                         .requestEmail()
                                         .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -248,6 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSignInButton = (SignInButton) findViewById(R.id.signInButton);
         mSignInButton.setSize(SignInButton.SIZE_WIDE);
         mSignInButton.setColorScheme(SignInButton.COLOR_DARK);
+
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,6 +326,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String email = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
                 login(email,password);
+            }
+        });
+
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //attemptLogin();
+                String email = mEmailView.getText().toString();
+                String password = mPasswordView.getText().toString();
+                add(email,password);
             }
         });
         

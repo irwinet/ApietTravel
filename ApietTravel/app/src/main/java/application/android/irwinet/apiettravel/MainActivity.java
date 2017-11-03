@@ -31,6 +31,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity
      *              GOOGLE                 *
      ***************************************/
     private GoogleApiClient mGoogleApiClient;
+
+    /* *************************************
+     *              FIREBASE               *
+     ***************************************/
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,39 +94,34 @@ public class MainActivity extends AppCompatActivity
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
         //}
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if(user != null)
+                {
+                    Toast.makeText(MainActivity.this, "Welcome: "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    /*AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this,R.style.MyDialogTheme);
+                    builder.setTitle(R.string.titleDialog);
+                    builder.setMessage(R.string.messageDialog);
+                    builder.setPositiveButton(R.string.ok,null);
+                    builder.create();
+                    builder.show();*/
+                    viewLogin();
+                }
+            }
+        };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if(opr.isDone())
-        {
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        }
-        else
-        {
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
-    }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        if(result.isSuccess())
-        {
-            GoogleSignInAccount account = result.getSignInAccount();
-            Toast.makeText(this, "Welcome: "+account.getDisplayName(), Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            //viewLogin();
-        }
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
     }
 
     @Override
@@ -200,6 +201,7 @@ public class MainActivity extends AppCompatActivity
 
     public void logOutGmail()
     {
+        FirebaseAuth.getInstance().signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -217,5 +219,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mAuthStateListener != null)
+        {
+            FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
+        }
     }
 }
