@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                     builder.setPositiveButton(R.string.ok,null);
                     builder.create();
                     builder.show();*/
-                    viewLogin();
+                    //viewLogin();
                 }
             }
         };
@@ -181,12 +181,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void signOut() {
+    private void signOut() {//firebase
         FirebaseAuth.getInstance().signOut();
         viewLogin();
     }
 
-    private void logout()
+    private void logout()//facebook
     {
         LoginManager.getInstance().logOut();
         viewLogin();
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intentLogin);
     }
 
-    public void logOutGmail()
+    public void logOutGmail()//gmail
     {
         FirebaseAuth.getInstance().signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {

@@ -42,5 +42,7 @@
 
     //Facebook
     <string name="id_facebook">136417117010010</string>
+    <string name="apiKey">boAXPIkK9InYwydnfptEb7gTA</string>
+    <string name="apiSecret">vFetHzAevx2NUdJlsfykcTViBofjtMK5gMBLbUiQSFFk3TNECG</string>
 
 </resources>

@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="application.android.irwinet.apiettravel">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -20,6 +16,10 @@
             android:value="@string/id_facebook">
 
         </meta-data>
+        <meta-data
+            android:name="com.twitter.sdk.ApplicationId"
+            android:value="@string/apiKey"
+            ></meta-data>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_login"
