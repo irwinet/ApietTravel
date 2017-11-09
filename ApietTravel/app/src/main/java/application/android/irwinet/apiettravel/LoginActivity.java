@@ -18,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.AccessToken;
@@ -65,6 +66,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private AutoCompleteTextView etEmail;
     private EditText etPassword;
     private View mProgressView;
+    private TextView tvRegister;
+    private Button btnLogin,btnRegister;
+    private LinearLayout email_login_form;
 
     /* *************************************
      *              FIREBASE               *
@@ -96,8 +100,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+
+        TwitterAuthConfig autoConfig = new TwitterAuthConfig(getString(R.string.apiKey),getString(R.string.apiSecret));
+        TwitterConfig twitterConfig = new TwitterConfig.Builder(this).twitterAuthConfig(autoConfig).build();
+        Twitter.initialize(twitterConfig);
+
         setContentView(R.layout.activity_login);
 
         //Assign Action Bar
@@ -115,12 +125,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathThree));
 
         //Initialize Controls
-        TextView tvRegister = (TextView) findViewById(R.id.tvRegister);
-        Button btnLogin = (Button) findViewById(R.id.btnLogin);
-        Button btnRegister = (Button) findViewById(R.id.btnRegister);
+        tvRegister = (TextView) findViewById(R.id.tvRegister);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnRegister = (Button) findViewById(R.id.btnRegister);
         etEmail = (AutoCompleteTextView) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         mProgressView = findViewById(R.id.login_progress);
+        email_login_form = (LinearLayout) findViewById(R.id.email_login_form);
 
         //Assign Font Family
         tvRegister.setTypeface(myTypeFacePrimary);
@@ -145,12 +156,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             @Override
             public void onCancel() {
-                Toast.makeText(LoginActivity.this, "Se canceló la operación", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "Ocurrió un error al ingresar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_SHORT).show();
             }
         });
         //End Login Facebook
@@ -182,10 +193,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         /* *************************************
          *                TWITTER              *
          ***************************************/
-        TwitterAuthConfig autoConfig = new TwitterAuthConfig(getString(R.string.apiKey),getString(R.string.apiSecret));
-        TwitterConfig twitterConfig = new TwitterConfig.Builder(this).twitterAuthConfig(autoConfig).build();
-        Twitter.initialize(twitterConfig);
-
         mTwitterLoginButton = (TwitterLoginButton) findViewById(R.id.signInTwitter);
         mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -195,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             @Override
             public void failure(TwitterException exception) {
-                Toast.makeText(LoginActivity.this, "Error al iniciar sesión con Twitter", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_SHORT).show();
             }
         });
         //End Login Twitter
@@ -224,18 +231,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
         //End Login Email And Password
-
-        //Event Password
-        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.btnLogin || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
 
         //Event Register
         tvRegister.setOnClickListener(new OnClickListener() {
@@ -266,15 +261,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 {
                     viewMain();
                 }
-                /*else
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this,R.style.MyDialogTheme);
-                    builder.setTitle(R.string.titleDialog);
-                    builder.setMessage(R.string.messageDialog);
-                    builder.setPositiveButton(R.string.ok,null);
-                    builder.create();
-                    builder.show();
-                }*/
             }
         };
         //End Firebase
@@ -283,27 +269,39 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void handleFacebookAccesToken(AccessToken accessToken)
     {
+        mProgressView.setVisibility(View.VISIBLE);
+        mLoginButton.setVisibility(View.GONE);
+
         AuthCredential credential=FacebookAuthProvider.getCredential(accessToken.getToken());
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                mProgressView.setVisibility(View.GONE);
+                mLoginButton.setVisibility(View.VISIBLE);
+
                 if(!task.isSuccessful())
                 {
-                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión con facebook", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
     private void signToFirebaseWithTwitterSession(TwitterSession session)
     {
+        mProgressView.setVisibility(View.VISIBLE);
+        mTwitterLoginButton.setVisibility(View.GONE);
+
         AuthCredential credential= TwitterAuthProvider.getCredential(session.getAuthToken().token,
                 session.getAuthToken().secret);
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                mProgressView.setVisibility(View.GONE);
+                mTwitterLoginButton.setVisibility(View.VISIBLE);
+
                 if(!task.isSuccessful())
                 {
-                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión con twitter", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -318,7 +316,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
         else
         {
-            Toast.makeText(this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msgLogin), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -337,7 +335,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 if(!task.isSuccessful())
                 {
-                    Toast.makeText(LoginActivity.this, "No se pudo autenticar con firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.msgLogin), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -351,47 +349,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-
-        // Reset errors.
-        etEmail.setError(null);
-        etPassword.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            etPassword.setError(getString(R.string.error_invalid_password));
-            focusView = etPassword;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError(getString(R.string.error_field_required));
-            focusView = etEmail;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            etEmail.setError(getString(R.string.error_invalid_email));
-            focusView = etEmail;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        }
-        else
-        {
-            Toast.makeText(this, "Validate Correct", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
@@ -414,36 +371,103 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //Login With Email And Password
     public void add(String email, String password)
     {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    Toast.makeText(LoginActivity.this, "Usuario Creado Correctamente", Toast.LENGTH_SHORT).show();
+        // Reset errors.
+        etEmail.setError(null);
+        etPassword.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            etPassword.setError(getString(R.string.error_field_required));
+            focusView = etPassword;
+            cancel = true;
+        } else if(!isPasswordValid(password))
+        {
+            etPassword.setError(getString(R.string.error_invalid_password));
+            focusView = etPassword;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            etEmail.setError(getString(R.string.error_field_required));
+            focusView = etEmail;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            etEmail.setError(getString(R.string.error_invalid_email));
+            focusView = etEmail;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        }
+        else {
+            mProgressView.setVisibility(View.VISIBLE);
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    mProgressView.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Usuario Creado Correctamente", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error Al Crear Usuario", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else
-                {
-                    Toast.makeText(LoginActivity.this, "Error Al Crear Usuario", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
+        }
     }
 
     public void login(String email, String password)
     {
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    viewMain();
+        // Reset errors.
+        etEmail.setError(null);
+        etPassword.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            etPassword.setError(getString(R.string.error_field_required));
+            focusView = etPassword;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            etEmail.setError(getString(R.string.error_field_required));
+            focusView = etEmail;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            etEmail.setError(getString(R.string.error_invalid_email));
+            focusView = etEmail;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        }
+        else {
+            mProgressView.setVisibility(View.VISIBLE);
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    mProgressView.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        viewMain();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Usuario o Contraseña Incorrecta", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else
-                {
-                    Toast.makeText(LoginActivity.this, "Usuario o Contraseña Incorrecta", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
+        }
     }
     //End Login Email And Password
 

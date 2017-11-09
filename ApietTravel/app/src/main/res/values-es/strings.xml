@@ -13,15 +13,17 @@
     <string name="error_invalid_email">Esta dirección de correo electrónica no es válida</string>
     <string name="error_invalid_password">Esta contraseña es muy corta</string>
     <string name="linkTermsConditions">Para registrarse, Acepto los <u>Términos y Condiciones</u></string>
-    <string name="messageDialog">Por favor vuelva a iniciar sesión para renovar su sesión.</string>
+    <string name="messageDialog">Estás seguro de cerrar sesión?</string>
     <string name="ok">OK</string>
     <string name="prompt_country">País</string>
     <string name="prompt_email">Correo Electrónico</string>
     <string name="prompt_firstname">Nombre</string>
     <string name="prompt_lastname">Apellidos</string>
     <string name="prompt_password">Contraseña</string>
-    <string name="titleDialog">Sesión Expirada</string>
+    <string name="titleDialog">Cerrar Sesión</string>
     <string name="title_activity_main">ApietTravel</string>
     <string name="permission_rationale">Se requieren permisos de contactos para completar el correo electrónico.</string>
     <string name="optionLogin">O inicie sesión con:</string>
+    <string name="sign_in_facebook_button">Iniciar sesión con Facebook</string>
+    <string name="msgLogin">No se pudo iniciar sesión</string>
 </resources>

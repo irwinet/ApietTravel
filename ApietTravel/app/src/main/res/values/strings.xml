@@ -33,15 +33,18 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="msgLogin">Unable to login</string>
 
     //Dialog
-    <string name="titleDialog">SESION EXPIRED</string>
-    <string name="messageDialog">Please re-login to renew your session.</string>
+    <string name="titleDialog">CLOSED SESSION</string>
+    <string name="messageDialog">Are you sure closed sesion?</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
 
     //Facebook
     <string name="id_facebook">136417117010010</string>
+    <string name="sign_in_facebook_button">Log in with Facebook</string>
+    //Twitter
     <string name="apiKey">boAXPIkK9InYwydnfptEb7gTA</string>
     <string name="apiSecret">vFetHzAevx2NUdJlsfykcTViBofjtMK5gMBLbUiQSFFk3TNECG</string>
 

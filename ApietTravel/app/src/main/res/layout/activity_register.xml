@@ -134,15 +134,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/tvOtherAuthentication"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/optionLogin"
-                android:textColor="@color/colorRegisterLogin"
-                android:textAlignment="center"/>
-
-
         </LinearLayout>
 
     </ScrollView>

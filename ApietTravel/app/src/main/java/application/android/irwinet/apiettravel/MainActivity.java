@@ -1,10 +1,12 @@
 package application.android.irwinet.apiettravel;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -61,39 +63,31 @@ public class MainActivity extends AppCompatActivity
                 .enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
-
-
         //End Google
 
-        /*if(AccessToken.getCurrentAccessToken()==null)
-        {
-            viewLogin();
-        }
-        else {*/
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            TextView tvName = (TextView) findViewById(R.id.tvName);
-            TextView tvEmail = (TextView) findViewById(R.id.tvEmail);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView tvName = (TextView) findViewById(R.id.tvName);
+        TextView tvEmail = (TextView) findViewById(R.id.tvEmail);
 
-            setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-        //}
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener(){
 
@@ -106,22 +100,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    /*AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this,R.style.MyDialogTheme);
-                    builder.setTitle(R.string.titleDialog);
-                    builder.setMessage(R.string.messageDialog);
-                    builder.setPositiveButton(R.string.ok,null);
-                    builder.create();
-                    builder.show();*/
-                    //viewLogin();
+                    viewLogin();
                 }
             }
         };
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
     }
 
     @Override
@@ -169,27 +151,18 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-            logOutGmail();
+
         } else if (id == R.id.nav_share) {
-            logout();
+
         } else if (id == R.id.nav_send) {
+
+        } else if (id == R.id.nav_exit) {
             signOut();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void signOut() {//firebase
-        FirebaseAuth.getInstance().signOut();
-        viewLogin();
-    }
-
-    private void logout()//facebook
-    {
-        LoginManager.getInstance().logOut();
-        viewLogin();
     }
 
     private void viewLogin()
@@ -199,21 +172,26 @@ public class MainActivity extends AppCompatActivity
         startActivity(intentLogin);
     }
 
-    public void logOutGmail()//gmail
+    public void signOut()
     {
-        FirebaseAuth.getInstance().signOut();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.MyDialogTheme);
+        builder.setTitle(R.string.titleDialog);
+        builder.setMessage(R.string.messageDialog);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onResult(@NonNull Status status) {
-                if(status.isSuccess())
-                {
-                    viewLogin();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "No se pudo cerra sesión", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseAuth.getInstance().signOut();
+                viewLogin();
             }
         });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create();
+        builder.show();
     }
 
     @Override
@@ -222,11 +200,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        if(mAuthStateListener != null)
-        {
-            FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
-        }
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthStateListener);
     }
 }
