@@ -14,21 +14,27 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/id_facebook">
-
         </meta-data>
         <meta-data
             android:name="com.twitter.sdk.ApplicationId"
-            android:value="@string/apiKey"
-            ></meta-data>
+            android:value="@string/apiKey"/>
+
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_login"
+            android:name=".SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/FullscreenTheme"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_login"
+            android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -41,11 +47,17 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
-        <activity android:name="com.facebook.FacebookActivity"
+        <activity
+            android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name">
-
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity
+            android:name=".WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/FullscreenTheme">
         </activity>
     </application>
 

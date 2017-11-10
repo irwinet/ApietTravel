@@ -8,4 +8,6 @@
     <color name="colorInput">#128B9C</color>
     <color name="colorButtonLogin">#128B9C</color>
     <color name="colorRegisterLogin">#9E9E9E</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

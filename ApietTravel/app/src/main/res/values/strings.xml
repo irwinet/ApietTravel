@@ -48,4 +48,12 @@
     <string name="apiKey">boAXPIkK9InYwydnfptEb7gTA</string>
     <string name="apiSecret">vFetHzAevx2NUdJlsfykcTViBofjtMK5gMBLbUiQSFFk3TNECG</string>
 
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button2">Dummy Button</string>
+    <string name="dummy_content2">WELCOME\nApietTravel</string>
+
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="dummy_button">Login</string>
+    <string name="dummy_content">IRWIN\nESTRADA</string>
+
 </resources>

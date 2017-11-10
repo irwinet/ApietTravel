@@ -108,21 +108,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         TwitterConfig twitterConfig = new TwitterConfig.Builder(this).twitterAuthConfig(autoConfig).build();
         Twitter.initialize(twitterConfig);
 
-        setContentView(R.layout.activity_login);
-
-        //Assign Action Bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         TypefaceUtil.setDefaultFont(this, "DEFAULT", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "MONOSPACE", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "SERIF", getString(R.string.pathPrimary));
         TypefaceUtil.setDefaultFont(this, "SANS_SERIF", getString(R.string.pathPrimary));
 
-        //Initialize Font Family
-        Typeface myTypeFacePrimary=Typeface.createFromAsset(getAssets(),getString(R.string.pathPrimary));
-        Typeface myTypeFaceSecond=Typeface.createFromAsset(getAssets(),getString(R.string.pathSecond));
-        Typeface myTypeFaceThree=Typeface.createFromAsset(getAssets(),getString(R.string.pathThree));
+        setContentView(R.layout.activity_login);
+
+        //Assign Action Bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //Initialize Controls
         tvRegister = (TextView) findViewById(R.id.tvRegister);
@@ -132,13 +127,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         etPassword = (EditText) findViewById(R.id.etPassword);
         mProgressView = findViewById(R.id.login_progress);
         email_login_form = (LinearLayout) findViewById(R.id.email_login_form);
-
-        //Assign Font Family
-        tvRegister.setTypeface(myTypeFacePrimary);
-        btnLogin.setTypeface(myTypeFacePrimary);
-        btnRegister.setTypeface(myTypeFacePrimary);
-        etEmail.setTypeface(myTypeFaceSecond);
-        etPassword.setTypeface(myTypeFaceSecond);
 
         /* *************************************
          *              FACEBOOK               *
@@ -504,6 +492,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Intent intentMain=new Intent(this,MainActivity.class);
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
     }
 
     public void viewRegister()

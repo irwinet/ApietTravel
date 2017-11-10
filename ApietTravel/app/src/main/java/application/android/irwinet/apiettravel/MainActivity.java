@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity
         Intent intentLogin=new Intent(this,LoginActivity.class);
         intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentLogin);
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
     }
 
     public void signOut()
