@@ -53,7 +53,8 @@
     <string name="dummy_content2">WELCOME\nApietTravel</string>
 
     <string name="title_activity_welcome">WelcomeActivity</string>
-    <string name="dummy_button">Login</string>
+    <string name="login">Login</string>
+    <string name="skip">Skip</string>
     <string name="dummy_content">IRWIN\nESTRADA</string>
 
 </resources>

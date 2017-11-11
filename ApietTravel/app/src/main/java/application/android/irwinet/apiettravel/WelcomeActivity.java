@@ -1,12 +1,18 @@
 package application.android.irwinet.apiettravel;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -18,7 +24,6 @@ public class WelcomeActivity extends AppCompatActivity {
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
     private static final boolean AUTO_HIDE = true;
-
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
@@ -32,6 +37,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
+    private VideoView vvPeru;
+
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -65,7 +72,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
-            hide();
+            //hide();
         }
     };
     /**
@@ -83,6 +90,8 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     };
 
+    Button btnLogin, btnSkip;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,20 +101,69 @@ public class WelcomeActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        vvPeru = (VideoView) findViewById(R.id.vvPeru);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnSkip= (Button) findViewById(R.id.btnSkip);
 
+        String uriPath = "android.resource://application.android.irwinet.apiettravel/"+R.raw.peru;
+        Uri uri = Uri.parse(uriPath);
+        //vvPeru.setVideoURI(uri);
+        //vvPeru.requestFocus();
+        //vvPeru.start();
+
+        MediaController mc= new MediaController(this);
+        mc.setAnchorView(vvPeru);
+        mc.setMediaPlayer(vvPeru);
+        vvPeru.setMediaController(mc);
+        vvPeru.setVideoURI(uri);
+
+        vvPeru.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer m) {
+                //mp.setLooping(true);
+                try {
+                    if (m.isPlaying()) {
+                        m.stop();
+                        m.release();
+                        m = new MediaPlayer();
+                    }
+                    m.setVolume(0f, 0f);
+                    m.setLooping(true);
+                    m.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        vvPeru.requestFocus();
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggle();
+                //toggle();
             }
         });
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewLogin();
+            }
+        });
+
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -160,4 +218,13 @@ public class WelcomeActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    private void viewLogin()
+    {
+        Intent intentLogin=new Intent(this,LoginActivity.class);
+        intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intentLogin);
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+    }
+
 }

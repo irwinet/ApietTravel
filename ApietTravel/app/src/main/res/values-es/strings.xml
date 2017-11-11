@@ -26,4 +26,6 @@
     <string name="optionLogin">O inicie sesión con:</string>
     <string name="sign_in_facebook_button">Iniciar sesión con Facebook</string>
     <string name="msgLogin">No se pudo iniciar sesión</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="skip">Omitir</string>
 </resources>

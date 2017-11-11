@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="#0099cc"
+             android:background="@drawable/fondo"
              tools:context="application.android.irwinet.apiettravel.WelcomeActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -17,10 +17,24 @@
         android:text="@string/dummy_content"
         android:textColor="#33b5e5"
         android:textSize="50sp"
+        android:visibility="gone"
         android:textStyle="bold"/>
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
+    <VideoView
+        android:id="@+id/vvPeru"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:clickable="false"
+        android:layout_gravity="center_vertical"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,20 +51,20 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:id="@+id/dummy_button"
+                android:id="@+id/btnLogin"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/dummy_button"/>
+                android:text="@string/login"/>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/btnSkip"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Skip"/>
+                android:text="@string/skip"/>
 
         </LinearLayout>
     </FrameLayout>

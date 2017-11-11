@@ -232,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Main", Toast.LENGTH_SHORT).show();
+                viewWelcome();
             }
         });
 
@@ -490,6 +490,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void viewMain()
     {
         Intent intentMain=new Intent(this,MainActivity.class);
+        intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intentMain);
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+    }
+
+    public void viewWelcome()
+    {
+        Intent intentMain=new Intent(this,WelcomeActivity.class);
         intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentMain);
         overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
