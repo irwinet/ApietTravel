@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +13,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -91,8 +99,10 @@ public class WelcomeActivity extends AppCompatActivity {
     };
 
     Button btnLogin, btnSkip;
+    ProgressBar mProgressBar;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -104,6 +114,7 @@ public class WelcomeActivity extends AppCompatActivity {
         vvPeru = (VideoView) findViewById(R.id.vvPeru);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSkip= (Button) findViewById(R.id.btnSkip);
+        mProgressBar = (ProgressBar) findViewById(R.id.login_progress);
 
         String uriPath = "android.resource://application.android.irwinet.apiettravel/"+R.raw.peru;
         Uri uri = Uri.parse(uriPath);
@@ -164,6 +175,41 @@ public class WelcomeActivity extends AppCompatActivity {
 
             }
         });
+
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mProgressBar.setVisibility(View.VISIBLE);
+                btnSkip.setVisibility(View.GONE);
+
+                Task<AuthResult> resultTask = FirebaseAuth.getInstance().signInAnonymously();
+                resultTask.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        mProgressBar.setVisibility(View.GONE);
+                        btnSkip.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+
+        /* *************************************
+         *                FIREBASE             *
+         ***************************************/
+        mAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener(){
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if(user != null)
+                {
+                    viewMain();
+                }
+            }
+        };
+        //End Firebase
+
     }
 
     @Override
@@ -224,6 +270,28 @@ public class WelcomeActivity extends AppCompatActivity {
         Intent intentLogin=new Intent(this,LoginActivity.class);
         intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentLogin);
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthStateListener);
+    }
+
+    private void viewMain()
+    {
+        Intent intentMain=new Intent(this,MainActivity.class);
+        intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intentMain);
         overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
     }
 
