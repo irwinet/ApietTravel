@@ -21,7 +21,7 @@
     <string name="prompt_lastname">Apellidos</string>
     <string name="prompt_password">Contraseña</string>
     <string name="titleDialog">Cerrar Sesión</string>
-    <string name="title_activity_main">ApietTravel</string>
+    <string name="title_activity_main">Home</string>
     <string name="permission_rationale">Se requieren permisos de contactos para completar el correo electrónico.</string>
     <string name="optionLogin">O inicie sesión con:</string>
     <string name="sign_in_facebook_button">Iniciar sesión con Facebook</string>
