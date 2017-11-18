@@ -59,6 +59,18 @@
             android:label="@string/title_activity_welcome"
             android:theme="@style/FullscreenTheme">
         </activity>
+
+        <service android:name=".Firebase.MiFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
+
+        <service android:name=".Firebase.MiFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"></action>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

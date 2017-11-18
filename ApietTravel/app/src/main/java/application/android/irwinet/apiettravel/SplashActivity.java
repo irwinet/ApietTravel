@@ -8,6 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import application.android.irwinet.apiettravel.FontManifest.TypefaceUtil;
 
@@ -86,6 +93,10 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
 
+    DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+    DatabaseReference welcomeRef=ref.child("welcome");
+    TextView tvWelcome;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +111,7 @@ public class SplashActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        tvWelcome = (TextView) findViewById(R.id.fullscreen_content);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -183,4 +195,23 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intentLogin);
         overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
     }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        welcomeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value=dataSnapshot.getValue(String.class);
+                tvWelcome.setText(value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }
