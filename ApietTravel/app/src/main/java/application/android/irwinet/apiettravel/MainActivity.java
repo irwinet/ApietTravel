@@ -2,6 +2,7 @@ package application.android.irwinet.apiettravel;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,23 +19,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.facebook.AccessToken;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +35,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import application.android.irwinet.apiettravel.GridHome.CustomAdapter;
+import application.android.irwinet.apiettravel.GridHome.Items;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -58,9 +54,12 @@ public class MainActivity extends AppCompatActivity
      *              FIREBASE               *
      ***************************************/
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    GridView gvHome;
+    ArrayList<Items> homeList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         /* *************************************
          *              STORAGE                *
          ***************************************/
-        final ImageView imgTest = (ImageView) findViewById(R.id.imgTest);
+        /*final ImageView imgTest = (ImageView) findViewById(R.id.imgTest);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://apiettravel.appspot.com/Home").child("cuisine.png");
 
@@ -121,10 +120,28 @@ public class MainActivity extends AppCompatActivity
                 public void onFailure(@NonNull Exception exception) {
                 }
             });
-        } catch (IOException e ) {}
+        } catch (IOException e ) {}*/
 
         //End Storage
 
+        /* *************************************
+         *              DATA                   *
+         ***************************************/
+        gvHome = (GridView) findViewById(R.id.gvHome);
+        homeList.add(new Items("What to do?",R.drawable.what_to_do));
+        homeList.add(new Items("Destinations",R.drawable.destinations));
+        homeList.add(new Items("Experiences",R.drawable.experiences));
+        homeList.add(new Items("Cuisine",R.drawable.cuisine));
+        homeList.add(new Items("Gallery",R.drawable.galery));
+        homeList.add(new Items("Utilities",R.drawable.utilities));
+
+        CustomAdapter myAdapter=new CustomAdapter(this,R.layout.activity_grid_view_items,homeList);
+        gvHome.setAdapter(myAdapter);
+        //End Data
+
+        /* *************************************
+         *              FIREBASE               *
+         ***************************************/
         mAuthStateListener = new FirebaseAuth.AuthStateListener(){
 
             @Override

@@ -57,4 +57,16 @@
     <string name="skip">Skip</string>
     <string name="dummy_content">IRWIN\nESTRADA</string>
 
+    //Data Menu Main
+    <string-array name="names_array">
+        <item>What to do?</item>
+        <item>Destinations</item>
+        <item>Experiences</item>
+        <item>Cuisine</item>
+        <item>Gallery</item>
+        <item>Utilities</item>
+        <item>My routes</item>
+        <item>My favorites</item>
+    </string-array>
+
 </resources>

@@ -47,7 +47,7 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService{
         Uri uriSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_event_black_24dp)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
