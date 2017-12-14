@@ -206,7 +206,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value=dataSnapshot.getValue(String.class);
-                tvWelcome.setText(value);
+                //tvWelcome.setText(value);
             }
 
             @Override

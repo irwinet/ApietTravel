@@ -20,7 +20,7 @@
     <string name="prompt_firstname">Nombre</string>
     <string name="prompt_lastname">Apellidos</string>
     <string name="prompt_password">Contraseña</string>
-    <string name="titleDialog">Cerrar Sesión</string>
+    <string name="titleDialog">CERRAR SESION</string>
     <string name="title_activity_main">Home</string>
     <string name="permission_rationale">Se requieren permisos de contactos para completar el correo electrónico.</string>
     <string name="optionLogin">O inicie sesión con:</string>
@@ -29,4 +29,5 @@
     <string name="login">Iniciar Sesión</string>
     <string name="skip">Omitir</string>
     <string name="dummy_content2">ApietTravel</string>
+    <string name="wrongoption">Opción Incorrecta</string>
 </resources>

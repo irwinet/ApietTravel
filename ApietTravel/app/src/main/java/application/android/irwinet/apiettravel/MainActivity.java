@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -137,6 +138,36 @@ public class MainActivity extends AppCompatActivity
 
         CustomAdapter myAdapter=new CustomAdapter(this,R.layout.activity_grid_view_items,homeList);
         gvHome.setAdapter(myAdapter);
+
+        gvHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position)
+                {
+                    case 0:
+                        Toast.makeText(MainActivity.this, "What to do?", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(MainActivity.this, "Destinations", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(MainActivity.this, "Experiences", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(MainActivity.this, "Cuisine", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 4:
+                        Toast.makeText(MainActivity.this, "Gallery", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 5:
+                        Toast.makeText(MainActivity.this, "Utilities", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(MainActivity.this, getString(R.string.wrongoption), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
         //End Data
 
         /* *************************************
